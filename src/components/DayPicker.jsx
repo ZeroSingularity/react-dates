@@ -47,6 +47,7 @@ const propTypes = forbidExtraProps({
   onDayClick: PropTypes.func,
   onDayMouseEnter: PropTypes.func,
   onDayMouseLeave: PropTypes.func,
+  isFocused: PropTypes.bool,
 
   // internationalization
   monthFormat: PropTypes.string,
@@ -74,6 +75,7 @@ const defaultProps = {
   onDayClick() {},
   onDayMouseEnter() {},
   onDayMouseLeave() {},
+  isFocused: false,
 
   // internationalization
   monthFormat: 'MMMM YYYY',
@@ -145,6 +147,7 @@ export default class DayPicker extends React.Component {
       monthTransition: null,
       translationValue: 0,
       scrollableMonthMultiple: 1,
+      focusedDate: null,
     };
 
     this.onPrevMonthClick = this.onPrevMonthClick.bind(this);
@@ -172,6 +175,14 @@ export default class DayPicker extends React.Component {
       if (!this.dayPickerWidth && this.isHorizontal()) {
         this.initializeDayPickerWidth();
         this.adjustDayPickerHeight();
+      }
+    }
+
+    if (nextProps.isFocused !== this.props.isFocused) {
+      if (nextProps.isFocused) {
+        this.setState({ focusedDate: moment() });
+      } else {
+        this.setState({ focusedDate: null });
       }
     }
   }
@@ -371,7 +382,9 @@ export default class DayPicker extends React.Component {
       monthTransition,
       translationValue,
       scrollableMonthMultiple,
+      focusedDate,
     } = this.state;
+
     const {
       enableOutsideDays,
       numberOfMonths,
@@ -466,6 +479,7 @@ export default class DayPicker extends React.Component {
               renderDay={renderDay}
               onMonthTransitionEnd={this.updateStateAfterMonthTransition}
               monthFormat={monthFormat}
+              focusedDate={focusedDate}
             />
             {verticalScrollable && this.renderNavigation()}
           </div>

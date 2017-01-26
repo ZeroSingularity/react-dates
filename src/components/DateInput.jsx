@@ -19,6 +19,7 @@ const propTypes = forbidExtraProps({
   onFocus: PropTypes.func,
   onKeyDownShiftTab: PropTypes.func,
   onKeyDownTab: PropTypes.func,
+  onKeyDownArrowDown: PropTypes.func,
 });
 
 const defaultProps = {
@@ -35,6 +36,7 @@ const defaultProps = {
   onFocus() {},
   onKeyDownShiftTab() {},
   onKeyDownTab() {},
+  onKeyDownArrowDown() {},
 };
 
 export default class DateInput extends React.Component {
@@ -78,13 +80,16 @@ export default class DateInput extends React.Component {
   }
 
   onKeyDown(e) {
-    const { onKeyDownShiftTab, onKeyDownTab } = this.props;
+    const { onKeyDownShiftTab, onKeyDownTab, onKeyDownArrowDown } = this.props;
+
     if (e.key === 'Tab') {
       if (e.shiftKey) {
         onKeyDownShiftTab(e);
       } else {
         onKeyDownTab(e);
       }
+    } else if (e.key === 'ArrowDown') {
+      onKeyDownArrowDown(e);
     }
   }
 

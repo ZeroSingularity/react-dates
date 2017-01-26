@@ -88,9 +88,12 @@ export default class DateRangePicker extends React.Component {
     super(props);
     this.state = {
       dayPickerContainerStyles: {},
+      isDayPickerFocused: false,
     };
 
     this.onOutsideClick = this.onOutsideClick.bind(this);
+    this.onFocusDayPicker = this.onFocusDayPicker.bind(this);
+    this.onBlurDayPicker = this.onBlurDayPicker.bind(this);
 
     this.responsivizePickerPosition = this.responsivizePickerPosition.bind(this);
   }
@@ -125,6 +128,18 @@ export default class DateRangePicker extends React.Component {
     if (!this.isOpened()) return;
 
     onFocusChange(null);
+  }
+
+  onFocusDayPicker() {
+    this.setState({
+      isDayPickerFocused: true,
+    });
+  }
+
+  onBlurDayPicker() {
+    this.setState({
+      isDayPickerFocused: false,
+    });
   }
 
   getDayPickerContainerClasses() {
@@ -224,7 +239,7 @@ export default class DateRangePicker extends React.Component {
       renderDay,
       initialVisibleMonth,
     } = this.props;
-    const { dayPickerContainerStyles } = this.state;
+    const { dayPickerContainerStyles, isDayPickerFocused } = this.state;
 
     const onOutsideClick = (!withFullScreenPortal && withPortal)
       ? this.onOutsideClick
@@ -262,6 +277,8 @@ export default class DateRangePicker extends React.Component {
           isDayBlocked={isDayBlocked}
           keepOpenOnDateSelect={keepOpenOnDateSelect}
           renderDay={renderDay}
+          isFocused={isDayPickerFocused}
+          onBlur={this.onBlurDayPicker}
         />
 
         {withFullScreenPortal &&
@@ -305,6 +322,7 @@ export default class DateRangePicker extends React.Component {
       keepOpenOnDateSelect,
       onDatesChange,
       onFocusChange,
+      renderDay,
     } = this.props;
 
     const onOutsideClick = (!withPortal && !withFullScreenPortal) ? this.onOutsideClick : undefined;
@@ -335,6 +353,8 @@ export default class DateRangePicker extends React.Component {
             withFullScreenPortal={withFullScreenPortal}
             onDatesChange={onDatesChange}
             onFocusChange={onFocusChange}
+            renderDay={renderDay}
+            onArrowDown={this.onFocusDayPicker}
             phrases={phrases}
             screenReaderMessage={screenReaderInputMessage}
           />

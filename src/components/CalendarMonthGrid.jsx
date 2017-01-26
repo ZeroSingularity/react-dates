@@ -33,6 +33,7 @@ const propTypes = forbidExtraProps({
   onMonthTransitionEnd: PropTypes.func,
   renderDay: PropTypes.func,
   transformValue: PropTypes.string,
+  focusedDate: momentPropTypes.momentObj,
 
   // i18n
   monthFormat: PropTypes.string,
@@ -52,6 +53,7 @@ const defaultProps = {
   onMonthTransitionEnd() {},
   renderDay: null,
   transformValue: 'none',
+  focusedDate: null,
 
   // i18n
   monthFormat: 'MMMM YYYY', // english locale
@@ -152,6 +154,7 @@ export default class CalendarMonthGrid extends React.Component {
       onDayClick,
       renderDay,
       onMonthTransitionEnd,
+      focusedDate,
     } = this.props;
 
 
@@ -187,6 +190,7 @@ export default class CalendarMonthGrid extends React.Component {
               onDayMouseLeave={onDayMouseLeave}
               onDayClick={onDayClick}
               renderDay={renderDay}
+              focusedDate={isVisible && focusedDate}
             />
           );
         })}

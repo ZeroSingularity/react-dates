@@ -10,6 +10,7 @@ import cx from 'classnames';
 import CalendarDay from './CalendarDay';
 
 import getCalendarMonthWeeks from '../utils/getCalendarMonthWeeks';
+import isSameDay from '../utils/isSameDay';
 
 import ScrollableOrientationShape from '../shapes/ScrollableOrientationShape';
 
@@ -30,6 +31,8 @@ const propTypes = forbidExtraProps({
   onDayMouseLeave: PropTypes.func,
   renderDay: PropTypes.func,
 
+  focusedDate: momentPropTypes.momentObj,
+
   // i18n
   monthFormat: PropTypes.string,
 });
@@ -44,6 +47,8 @@ const defaultProps = {
   onDayMouseEnter() {},
   onDayMouseLeave() {},
   renderDay: null,
+
+  focusedDate: null,
 
   // i18n
   monthFormat: 'MMMM YYYY', // english locale
@@ -81,6 +86,7 @@ export default class CalendarMonth extends React.Component {
       onDayMouseEnter,
       onDayMouseLeave,
       renderDay,
+      focusedDate,
     } = this.props;
 
     const { weeks } = this.state;
@@ -106,6 +112,7 @@ export default class CalendarMonth extends React.Component {
                   <CalendarDay
                     day={day}
                     isOutsideDay={!day || day.month() !== month.month()}
+                    isFocused={isVisible && isSameDay(day, focusedDate)}
                     modifiers={modifiers}
                     key={dayOfWeek}
                     onDayMouseEnter={onDayMouseEnter}

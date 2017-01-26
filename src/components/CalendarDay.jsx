@@ -9,6 +9,7 @@ const propTypes = forbidExtraProps({
   day: momentPropTypes.momentObj,
   isOutsideDay: PropTypes.bool,
   modifiers: PropTypes.object,
+  isFocused: PropTypes.bool,
   onDayClick: PropTypes.func,
   onDayMouseEnter: PropTypes.func,
   onDayMouseLeave: PropTypes.func,
@@ -19,6 +20,7 @@ const defaultProps = {
   day: moment(),
   isOutsideDay: false,
   modifiers: {},
+  isFocused: false,
   onDayClick() {},
   onDayMouseEnter() {},
   onDayMouseLeave() {},
@@ -32,6 +34,13 @@ export function getModifiersForDay(modifiers, day) {
 export default class CalendarDay extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
+  }
+
+  componentDidUpdate() {
+    const { isFocused } = this.props;
+    if (isFocused) {
+      this.buttonRef.focus();
+    }
   }
 
   onDayClick(day, e) {
@@ -62,13 +71,18 @@ export default class CalendarDay extends React.Component {
     }, getModifiersForDay(modifiers, day).map(mod => `CalendarDay--${mod}`));
 
     return (day ?
-      <td
-        className={className}
-        onMouseEnter={e => this.onDayMouseEnter(day, e)}
-        onMouseLeave={e => this.onDayMouseLeave(day, e)}
-        onClick={e => this.onDayClick(day, e)}
-      >
-        {renderDay ? renderDay(day) : day.format('D')}
+      <td>
+        <button
+          ref={(ref) => { this.buttonRef = ref; }}
+          type="button"
+          className={className}
+          aria-label={day.format('LL')}
+          onMouseEnter={e => this.onDayMouseEnter(day, e)}
+          onMouseLeave={e => this.onDayMouseLeave(day, e)}
+          onClick={e => this.onDayClick(day, e)}
+        >
+          {renderDay ? renderDay(day) : day.format('D')}
+        </button>
       </td>
       :
       <td />
