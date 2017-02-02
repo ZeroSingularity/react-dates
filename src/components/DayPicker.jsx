@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import momentPropTypes from 'react-moment-proptypes';
 import shallowCompare from 'react-addons-shallow-compare';
 import ReactDOM from 'react-dom';
 import { forbidExtraProps } from 'airbnb-prop-types';
@@ -33,6 +34,7 @@ const propTypes = forbidExtraProps({
   withPortal: PropTypes.bool,
   onOutsideClick: PropTypes.func,
   hidden: PropTypes.bool,
+  firstVisibleMonth: momentPropTypes.momentObj,
   initialVisibleMonth: PropTypes.func,
 
   // navigation props
@@ -61,6 +63,7 @@ const defaultProps = {
   withPortal: false,
   onOutsideClick() {},
   hidden: false,
+  firstVisibleMonth: moment(),
   initialVisibleMonth: () => moment(),
 
   // navigation props
@@ -269,13 +272,14 @@ export default class DayPicker extends React.Component {
   }
 
   updateStateAfterMonthTransition() {
-    const { currentMonth, monthTransition } = this.state;
+    const { firstVisibleMonth, onMonthChange } = this.props;
+    const { monthTransition } = this.state;
 
-    let newMonth = currentMonth;
+    let newMonth = firstVisibleMonth;
     if (monthTransition === PREV_TRANSITION) {
-      newMonth = currentMonth.clone().subtract(1, 'month');
+      newMonth = firstVisibleMonth.clone().subtract(1, 'month');
     } else if (monthTransition === NEXT_TRANSITION) {
-      newMonth = currentMonth.clone().add(1, 'month');
+      newMonth = firstVisibleMonth.clone().add(1, 'month');
     }
 
     // clear the previous transforms
@@ -286,10 +290,11 @@ export default class DayPicker extends React.Component {
     );
 
     this.setState({
-      currentMonth: newMonth,
       monthTransition: null,
       translationValue: 0,
     });
+
+    onMonthChange(newMonth);
   }
 
   adjustDayPickerHeight() {
@@ -386,6 +391,7 @@ export default class DayPicker extends React.Component {
     } = this.state;
 
     const {
+      firstVisibleMonth,
       enableOutsideDays,
       numberOfMonths,
       orientation,
@@ -468,7 +474,7 @@ export default class DayPicker extends React.Component {
               transformValue={transformValue}
               enableOutsideDays={enableOutsideDays}
               firstVisibleMonthIndex={firstVisibleMonthIndex}
-              initialMonth={currentMonth}
+              initialMonth={firstVisibleMonth}
               isAnimating={isCalendarMonthGridAnimating}
               modifiers={modifiers}
               orientation={orientation}

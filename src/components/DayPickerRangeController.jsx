@@ -95,6 +95,7 @@ export default class DayPickerRangeController extends React.Component {
     super(props);
     this.state = {
       hoverDate: null,
+      firstVisibleMonth: props.initialVisibleMonth(),
     };
 
     this.isTouchDevice = isTouchDevice();
@@ -103,6 +104,7 @@ export default class DayPickerRangeController extends React.Component {
     this.onDayClick = this.onDayClick.bind(this);
     this.onDayMouseEnter = this.onDayMouseEnter.bind(this);
     this.onDayMouseLeave = this.onDayMouseLeave.bind(this);
+    this.onMonthChange = this.onMonthChange.bind(this);
   }
 
   componentWillUpdate() {
@@ -157,6 +159,12 @@ export default class DayPickerRangeController extends React.Component {
 
     this.setState({
       hoverDate: null,
+    });
+  }
+
+  onMonthChange(month) {
+    this.setState({
+      firstVisibleMonth: month,
     });
   }
 
@@ -245,6 +253,8 @@ export default class DayPickerRangeController extends React.Component {
       isFocused,
     } = this.props;
 
+    const { firstVisibleMonth } = this.state;
+
     const modifiers = {
       today: day => this.isToday(day),
       blocked: day => this.isBlocked(day),
@@ -283,6 +293,8 @@ export default class DayPickerRangeController extends React.Component {
         withPortal={withPortal}
         hidden={!focusedInput}
         initialVisibleMonth={initialVisibleMonth}
+        firstVisibleMonth={firstVisibleMonth}
+        onMonthChange={this.onMonthChange}
         onOutsideClick={onOutsideClick}
         navPrev={navPrev}
         navNext={navNext}
