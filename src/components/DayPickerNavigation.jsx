@@ -20,6 +20,12 @@ const propTypes = forbidExtraProps({
 
   onPrevMonthClick: PropTypes.func,
   onNextMonthClick: PropTypes.func,
+
+  // internationalization
+  phrases: {
+    jumpToPrevMonth: PropTypes.node,
+    jumpToNextMonth: PropTypes.node,
+  },
 });
 
 const defaultProps = {
@@ -29,6 +35,12 @@ const defaultProps = {
 
   onPrevMonthClick() {},
   onNextMonthClick() {},
+
+  // internationalization
+  phrases: {
+    jumpToPrevMonth: 'Jump to previous month',
+    jumpToNextMonth: 'Jump to next month',
+  },
 };
 
 export default function DayPickerNavigation(props) {
@@ -38,6 +50,7 @@ export default function DayPickerNavigation(props) {
     onPrevMonthClick,
     onNextMonthClick,
     orientation,
+    phrases,
   } = props;
 
   const isVertical = orientation !== HORIZONTAL_ORIENTATION;
@@ -71,20 +84,30 @@ export default function DayPickerNavigation(props) {
   return (
     <div className={navClassNames}>
       {!isVerticalScrollable &&
-        <span
+        <button
+          type="button"
+          aria-label={phrases.jumpToPrevMonth}
           className={prevClassNames}
           onClick={onPrevMonthClick}
+          onMouseUp={(e) => {
+            e.currentTarget.blur();
+          }}
         >
           {navPrevIcon}
-        </span>
+        </button>
       }
 
-      <span
+      <button
+        type="button"
+        aria-label={phrases.jumpToNextMonth}
         className={nextClassNames}
         onClick={onNextMonthClick}
+        onMouseUp={(e) => {
+          e.currentTarget.blur();
+        }}
       >
         {navNextIcon}
-      </span>
+      </button>
     </div>
   );
 }

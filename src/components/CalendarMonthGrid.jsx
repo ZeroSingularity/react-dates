@@ -161,15 +161,17 @@ export default class CalendarMonthGrid extends React.Component {
 
     const { months } = this.state;
 
+    const isHorizontal = orientation === HORIZONTAL_ORIENTATION;
+
     const className = cx('CalendarMonthGrid', {
-      'CalendarMonthGrid--horizontal': orientation === HORIZONTAL_ORIENTATION,
+      'CalendarMonthGrid--horizontal': isHorizontal,
       'CalendarMonthGrid--vertical': orientation === VERTICAL_ORIENTATION,
       'CalendarMonthGrid--vertical-scrollable': orientation === VERTICAL_SCROLLABLE,
       'CalendarMonthGrid--animating': isAnimating,
     });
 
     const style = Object.assign({
-      width: (numberOfMonths + 1) * calendarMonthWidth,
+      width: isHorizontal ? (numberOfMonths + 1) * calendarMonthWidth : calendarMonthWidth,
     }, getTransformStyles(transformValue));
 
     return (

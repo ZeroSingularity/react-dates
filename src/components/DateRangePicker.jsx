@@ -80,6 +80,8 @@ const defaultProps = {
   phrases: {
     closeDatePicker: 'Close',
     clearDates: 'Clear Dates',
+    jumpToPrevMonth: 'Jump to previous month',
+    jumpToNextMonth: 'Jump to next month',
   },
 };
 
@@ -88,12 +90,14 @@ export default class DateRangePicker extends React.Component {
     super(props);
     this.state = {
       dayPickerContainerStyles: {},
+      isDateRangePickerInputFocused: false,
       isDayPickerFocused: false,
     };
 
     this.onOutsideClick = this.onOutsideClick.bind(this);
-    this.onFocusDayPicker = this.onFocusDayPicker.bind(this);
-    this.onBlurDayPicker = this.onBlurDayPicker.bind(this);
+    this.onDateRangePickerInputFocus = this.onDateRangePickerInputFocus.bind(this);
+    this.onDayPickerFocus = this.onDayPickerFocus.bind(this);
+    this.onDayPickerBlur = this.onDayPickerBlur.bind(this);
 
     this.responsivizePickerPosition = this.responsivizePickerPosition.bind(this);
   }
@@ -106,6 +110,10 @@ export default class DateRangePicker extends React.Component {
       { passive: true },
     );
     this.responsivizePickerPosition();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // set daterangepickinputfocused to true if focusedinput went from nothing to something
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -127,17 +135,37 @@ export default class DateRangePicker extends React.Component {
     const { onFocusChange } = this.props;
     if (!this.isOpened()) return;
 
+    this.setState({
+      isDateRangePickerInputFocused: false,
+      isDayPickerFocused: false,
+    });
+
     onFocusChange(null);
   }
 
-  onFocusDayPicker() {
+  onDateRangePickerInputFocus(focusedInput) {
+    const { onFocusChange } = this.props;
+
+    if (focusedInput) {
+      this.setState({
+        isDateRangePickerInputFocused: true,
+        isDayPickerFocused: false,
+      });
+    }
+
+    onFocusChange(focusedInput);
+  }
+
+  onDayPickerFocus() {
     this.setState({
+      isDateRangePickerInputFocused: false,
       isDayPickerFocused: true,
     });
   }
 
-  onBlurDayPicker() {
+  onDayPickerBlur() {
     this.setState({
+      isDateRangePickerInputFocused: true,
       isDayPickerFocused: false,
     });
   }
@@ -238,6 +266,7 @@ export default class DateRangePicker extends React.Component {
       keepOpenOnDateSelect,
       renderDay,
       initialVisibleMonth,
+      phrases: { jumpToPrevMonth, jumpToNextMonth },
     } = this.props;
     const { dayPickerContainerStyles, isDayPickerFocused } = this.state;
 
@@ -278,7 +307,11 @@ export default class DateRangePicker extends React.Component {
           keepOpenOnDateSelect={keepOpenOnDateSelect}
           renderDay={renderDay}
           isFocused={isDayPickerFocused}
-          onBlur={this.onBlurDayPicker}
+          onBlur={this.onDayPickerBlur}
+          phrases={{
+            jumpToPrevMonth,
+            jumpToNextMonth,
+          }}
         />
 
         {withFullScreenPortal &&
@@ -321,9 +354,9 @@ export default class DateRangePicker extends React.Component {
       reopenPickerOnClearDates,
       keepOpenOnDateSelect,
       onDatesChange,
-      onFocusChange,
-      renderDay,
     } = this.props;
+
+    const { isDateRangePickerInputFocused } = this.state;
 
     const onOutsideClick = (!withPortal && !withFullScreenPortal) ? this.onOutsideClick : undefined;
 
@@ -352,11 +385,11 @@ export default class DateRangePicker extends React.Component {
             isOutsideRange={isOutsideRange}
             withFullScreenPortal={withFullScreenPortal}
             onDatesChange={onDatesChange}
-            onFocusChange={onFocusChange}
-            renderDay={renderDay}
-            onArrowDown={this.onFocusDayPicker}
+            onFocusChange={this.onDateRangePickerInputFocus}
+            onArrowDown={this.onDayPickerFocus}
             phrases={phrases}
             screenReaderMessage={screenReaderInputMessage}
+            isFocused={isDateRangePickerInputFocused}
           />
 
           {this.maybeRenderDayPickerWithPortal()}

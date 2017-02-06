@@ -64,6 +64,7 @@ export default class CalendarDay extends React.Component {
       isOutsideDay,
       modifiers,
       renderDay,
+      isFocused,
     } = this.props;
 
     const className = cx('CalendarDay', {
@@ -71,15 +72,17 @@ export default class CalendarDay extends React.Component {
     }, getModifiersForDay(modifiers, day).map(mod => `CalendarDay--${mod}`));
 
     return (day ?
-      <td>
+      <td className={className}>
         <button
-          ref={(ref) => { this.buttonRef = ref; }}
           type="button"
-          className={className}
-          aria-label={day.format('LL')}
+          ref={(ref) => { this.buttonRef = ref; }}
+          className="CalendarDay__button"
+          aria-label={`${day.format('dddd')}. ${day.format('LL')}`}
           onMouseEnter={e => this.onDayMouseEnter(day, e)}
           onMouseLeave={e => this.onDayMouseLeave(day, e)}
+          onMouseUp={e => e.currentTarget.blur()}
           onClick={e => this.onDayClick(day, e)}
+          tabIndex={isFocused ? 0 : -1}
         >
           {renderDay ? renderDay(day) : day.format('D')}
         </button>

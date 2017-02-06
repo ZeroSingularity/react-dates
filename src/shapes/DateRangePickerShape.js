@@ -58,5 +58,8 @@ export default {
   phrases: PropTypes.shape({
     closeDatePicker: PropTypes.node,
     clearDates: PropTypes.node,
+    jumpToPrevMonth: PropTypes.node,
+    jumpToNextMonth: PropTypes.node,
+
   }),
 };

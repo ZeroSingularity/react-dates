@@ -61,10 +61,10 @@ export default class DateInput extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { focused } = this.props;
-    if (prevProps.focused === focused) return;
+    const { focused, hasFocus } = this.props;
+    if (prevProps.focused === focused && prevProps.hasFocus === hasFocus) return;
 
-    if (focused) {
+    if (focused && hasFocus) {
       this.inputRef.focus();
       this.inputRef.select();
     } else {
